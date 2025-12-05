@@ -45,20 +45,16 @@ def set_excel_variables(in_dictConfig, in_rowItem):
     strDataInicio = str(in_rowItem["DataInicio"])
     strDataFim = str(in_rowItem["DataFim"])
 
-    # Check if both dates are None and adjust to correct format. Expected Input Format: "dd-mm-YYYY"
-    # Check if dataIncio = None and adjusts correct type
-    if strDataInicio == "nan":
+    # Try formatting both dates to correct format. If error, assumes none Expected Input Format: "dd-mm-YYYY"
+    try:
+        strDataInicio = dt.datetime.strptime(strDataInicio, "%Y-%m-%d %H:%M:%S").strftime("%d%m%Y").lstrip("0")
+    except:
         strDataInicio = None
-    else:
-        # Adjusts to ddmmYYYY
-        "".join(strDataInicio.split("-")).lstrip("0")
 
-    # Check if dataFim = None and adjusts correct type
-    if strDataFim == "nan":
+    try:
+        strDataFim = dt.datetime.strptime(strDataFim, "%Y-%m-%d %H:%M:%S").strftime("%d%m%Y").lstrip("0")
+    except:
         strDataFim = None
-    else:
-        # Adjusts to ddmmYYYY
-        "".join(strDataFim.split("-")).lstrip("0")
 
     # If current Environment is Homol, grab Homol ID from Excel (Homol ID not used in prod)
     if strEnvType == "HML":
@@ -76,11 +72,11 @@ def request_access_token(in_dictConfig):
 
     # Check Environment and grab info according to it
     if strEnvType.upper() == "HML":
-        strUrl = in_dictConfig["AuthTokenHomolURL"]
+        strUrl = in_dictConfig["APIAuthTokenHomolURL"]
         strClientId = in_dictConfig["ClientIdHomol"]
         strClientSecret = in_dictConfig["ClientSecretHomol"]
     elif strEnvType.upper() == "PRD":
-        strUrl = in_dictConfig["AuthTokenURL"]
+        strUrl = in_dictConfig["APIAuthTokenURL"]
         strClientId = in_dictConfig["ClientId"]
         strClientSecret = in_dictConfig["ClientSecret"]
     else:
@@ -140,10 +136,10 @@ def request_extract_info(in_dictConfig, in_strAcessToken,in_strAgencia, in_strCo
 
     # Check Environment and grab info according to it
     if strEnvType.upper() == "HML":
-        strUrl = in_dictConfig["ExtractHomolURL"]
+        strUrl = in_dictConfig["APIExtractHomolURL"]
         strDevAppKey = in_dictConfig["DevAppKeyHomol"]
     elif strEnvType.upper() == "PRD":
-        strUrl = in_dictConfig["ExtractURL"]
+        strUrl = in_dictConfig["APIExtractURL"]
         strDevAppKey = in_dictConfig["DevAppKey"]
     else:
         raise Exception("Environment Type not Mapped.")
@@ -232,7 +228,7 @@ def convert_extract_info_to_df(in_listLancamento):
     # Returns dataframe with all transactions
     return pd.DataFrame(data)
 
-#Converts Lists of logs to dataframe format to input in the Excel Report
+# Converts Lists of logs to dataframe format to input in the Excel Report
 # Input: List of Agencia, List of Conta, List of Status
 # Returns dataFrame ready to be inputted into Excel
 def convert_log_info_to_df(in_listLogsAgencia, in_listLogsConta, in_listLogsStatus):

@@ -27,13 +27,15 @@ def main():
 
     #For each row in input excel get access token when necessary and request extract info and add to OutputExcel
     for index, row in dfExcel.iterrows():
-        # Set and adjusts input excel variables to be used on the request_extract_info function
-        strAgencia, strConta, strDataInicio, strDataFim, strHomolId = customLib.set_excel_variables(dictConfig, row)
-        log.info(f"Started process for account {strConta}.")
-        # Get Config data related to the request_extract_info function
-        strPageNumber = dictConfig["ExtractPageNumber"]
-        strMaxEntries = dictConfig["ExtractMaxEntries"]
         try:
+            # Set and adjusts input excel variables to be used on the request_extract_info function
+            strAgencia, strConta, strDataInicio, strDataFim, strHomolId = customLib.set_excel_variables(dictConfig, row)
+            log.info(f"Started process for account {strConta}.")
+
+            # Get Config data related to the request_extract_info function
+            strPageNumber = dictConfig["ExtractPageNumber"]
+            strMaxEntries = dictConfig["ExtractMaxEntries"]
+
             # Checks if Access_Token no longer valid
             if not boolValidToken:
                 # Requests API Auth Token and returns Access_Token to use in the next API and the date it will expire
