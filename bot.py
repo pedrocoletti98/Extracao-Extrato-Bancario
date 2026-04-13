@@ -1,7 +1,7 @@
 import os
 import logging as log
 import datetime as dt
-import CaseCSNlib as customLib
+import CustomLib as customLib
 
 def main():
     # Set Logging Level and Format
